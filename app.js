@@ -16,11 +16,12 @@ function create_html_resp(resp){
     for (var i=0; i<resp.length;i++){
         //TODO: adrese un nevis bildi nocentret bet visu contentu ievietot div un to div iecentret un bildi uztaisit par pogu
         var to_add = ""
-        var main_image = `<img class="border border-3 mx-auto d-block" src=${resp[i].main_image}>`;
+        var main_image = `<a href=${resp[i].listing} target="_blank"><img class="border border-3 mx-auto d-block" src=${resp[i].main_image}></a>`;
         var price = `<p class="h5 fw-bold">Cena: ${resp[i].price}€</p>`;
+        var address = `<p class="h6 text-secondary">${resp[i].address.join(', ')}</p>`;
         var size = `<p>Zemes platība: ${resp[i].lot_size}m² ${"&nbsp;".repeat(5)} Mājas platība: ${resp[i].property_size}m²</p>`;
         
-        to_add += `<div class="col">\n\t${main_image}\n${price}\n${size}</div>`;
+        to_add += `<div class="col">\n\t${main_image}\n${price}${address}\n${size}</div>`;
 
         //so 2 results show per row
         if (i%2===1) {
@@ -39,15 +40,13 @@ app.get('/', (req, res) => {
     res.sendFile(static + 'index.html');
 });
 
-app.post('/search', async (req, res) => {
+app.post('/search', async (req, res) => { //mos uzmaukt ta ka visi parametri ir url, lai varetu aiziet atpakal uz lapu piem. /search?...
     var req_data = req.body;
-    console.log(req_data);
     var resp = await helper.search(req_data);
+
     if (typeof resp === "string") {
         res.send(fs.readFileSync(static+'header.html', 'utf-8')+"<h1>Neko neatradām ar šiem kritērijiem :(</h1></body></html>");
-    }
-
-    else {
+    } else {
         res.send(create_html_resp(resp));
     }
 });
