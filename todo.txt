@@ -1,8 +1,0 @@
-TODO:
-
-make results show on diff page
-add next page functionality
-removes unnecessary comments
-remove console.logs
-make cleaner?
-remove navbar? (atleast from start page)
