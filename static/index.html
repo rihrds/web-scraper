@@ -71,8 +71,8 @@
             <div class="form-group text-left my-4">
                 <h3>Atrašanās vieta</h3>
                 <div class="d-inline-flex align-items-center" style="width: 20%">
-                    <label class="col-md-2" for="address[county][]"></label>
-                    <select name="address[county][]" class="form-control bg-dark text-light" placeholder="">
+                    <label class="col-md-2" for="address[county]"></label>
+                    <select name="address[county]" class="form-control bg-dark text-light" placeholder="">
                         <option value="">---</option>
                         <option value="25110">Rīga</option>
                         <option value="25111">Daugavpils</option>
@@ -209,12 +209,12 @@
             localStorage.setItem("steps", 1);
             localStorage.setItem("page", 1);
             
-            for (i=0; i<Object.keys(controls).length; i++){
+            for (i=0; i<controls.length; i++){
                 controls[i].disabled = controls[i].value == '';
             }
             form.submit();
 
-        for (i=0; i<Object.keys(controls).length; i++){
+        for (i=0; i<controls.length; i++){
             controls[i].disabled = 0;
         }
         });

@@ -48,11 +48,14 @@ app.get('/search', async (req, res) => {
     for (var [key, value] of Object.entries(req.query)){
 
         if (typeof value == 'object'){
-            req_data[key+"["+Object.keys(value)+"]"] = Object.values(value)[0]
+            for (var [k, v] of Object.entries(value))
+                req_data[key+"["+k+"]"] = v
         } else if (parseInt(value) > 0) {
             req_data[key] = value
         }
     }
+
+    console.log(req_data);
 
     var resp = await helper.search(req_data);
 

@@ -8,6 +8,7 @@ const ITEMS_PER_PAGE = 20;
 module.exports = {
     search:async function search(json) {
         var query = build_search_query(json);
+        console.log(query)
         var data = await get_data(query);
         if (typeof data === "string"){
             return data
