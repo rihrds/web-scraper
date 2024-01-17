@@ -55,8 +55,6 @@ app.get('/search', async (req, res) => {
         }
     }
 
-    console.log(req_data);
-
     var resp = await helper.search(req_data);
 
     if (typeof resp === "string") {
