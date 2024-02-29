@@ -20,7 +20,7 @@ function create_html_resp(resp){
         var to_add = ""
         var main_image = `<a href=${resp[i].listing} target="_blank"><img class="border border-3 mx-auto d-block" src=${resp[i].main_image}></a>`;
         var price = `<p class="h5 fw-bold">Cena: ${resp[i].price}€</p>`;
-        var address = `<p class="h6 text-secondary">${resp[i].address.join(', ')}</p>`;
+        var address = `<p class="h6 text-secondary">${resp[i].address}</p>`;
         var size = `<p>Zemes platība: ${resp[i].lot_size}m² ${"&nbsp;".repeat(5)} Mājas platība: ${resp[i].property_size}m²</p>`;
         
         to_add += `<div class="col">\n\t${main_image}\n${price}${address}\n${size}</div>`;
@@ -44,6 +44,7 @@ app.get('/', (req, res) => {
 
 app.get('/search', async (req, res) => {
     var req_data = {};
+    console.log(req.query);
 
     for (var [key, value] of Object.entries(req.query)){
 
