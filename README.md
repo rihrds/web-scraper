@@ -46,5 +46,7 @@ function process_data(data){
 
 ## Darba plāns
 * Uztaisīt funkciju failā helper.js, kas kā ar city24.lv, var sameklēt visus sludinājumus. Vēl jānoskaidro, kā tas ir izdarāms skatoties networks tab veicot dažādus requestus uz ss.lv
-* Uztaisīt database.js failā tā, lai jauna datubāze tiek izveidota tikai tad, ja tā jau neeksistē. Šo var izdarīt pārbaudot vai pats fails neeksistē vai kādā citā veidā, vēl nezinu tieši kā. To noskaidroju procesā, kā ir labāk.
-* Pārveidot helper.js failu tā, lai tas, meklējot manā lapā sludinājumus, vairs neveic web requestus 
+* Uztaisīt database.js failā tā, lai jauna datubāze tiek izveidota tikai tad, ja tā jau neeksistē. Šo var izdarīt pārbaudot vai pats fails neeksistē vai kādā citā veidā, vēl nezinu tieši kā. To noskaidroju procesā, kā man sanāk labāk.
+* Pārveidot helper.js failu tā, lai tas, meklējot manā lapā sludinājumus, vairs neveic web requestus, bet gan meklē datubāzē. To izdarīšu izveidojot backup failu, lai nepazustu tagadējais kods, kamēr strādāju pie datubāzes koda. Meklēt datubāzē varēs ar sqlite3 bibliotēku un sql statementu "SELECT ... from ... WHERE ..."
+* Izveidošu metodi, lai varētu rezultātus sūtīt lietotājām tos kārtojot noteiktā secība, piemēram, cena no mazākās uz lielāko. To var izdarīt sql statementam pievienojot ORDER BY.
+* Izveidošu kodu tā, lai šo kārtošanu var mainīt un izmanot lietotājs lapā. Tas būs papildus html kods pašai izvēlnei, kā arī javascript kods front-side lapā, lai varētu šo veidu, kā kārtot nosūtīt serverim. Arī backendā vajadzēs pielāgot un uzrakstīt kodu, lai strādātu kārtošana.
