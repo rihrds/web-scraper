@@ -46,7 +46,7 @@ function process_data(data){
 
 ## Darba plāns
 * ~~Noskaidrot, kā no ss.lv var dabūt sludinājumu sarakstu~~ **Izdarīts, https://www.ss.lv/lv/real-estate/homes-summer-residences/valka-and-reg/rss/ Šis atgriež xml failu ar katra sludinājuma datiem**
-* Uztaisīt funkciju failā helper.js, kas kā ar city24.lv, var sameklēt visus sludinājumus.
+* Uztaisīt funkciju failā helper.js, kas kā ar city24.lv, var sameklēt visus sludinājumus. To izdarīšu ar fetch un kādu xml parseri
 * Uztaisīt database.js failā tā, lai jauna datubāze tiek izveidota tikai tad, ja tā jau neeksistē. Šo var izdarīt pārbaudot vai pats fails neeksistē vai kādā citā veidā, vēl nezinu tieši kā. To noskaidroju procesā, kā man sanāk labāk.
 * Pārveidot helper.js failu tā, lai tas, meklējot manā lapā sludinājumus, vairs neveic web requestus, bet gan meklē datubāzē. To izdarīšu izveidojot backup failu, lai nepazustu tagadējais kods, kamēr strādāju pie datubāzes koda. Meklēt datubāzē varēs ar sqlite3 bibliotēku un sql statementu "SELECT ... from ... WHERE ..."
 * Izveidošu metodi, lai varētu rezultātus sūtīt lietotājām tos kārtojot noteiktā secība, piemēram, cena no mazākās uz lielāko. To var izdarīt sql statementam pievienojot ORDER BY.
