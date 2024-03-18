@@ -1,3 +1,5 @@
+const jsdom = require("jsdom");
+
 const base_query="https://api.city24.lv/lv_LV/search/realties?address[cc]=2&tsType=sale&unitType=House&adReach=1";
 
 const useful_data = ["main_image", "price", "property_size", "lot_size"];
@@ -9,11 +11,11 @@ module.exports = {
     search:async function search(json) {
         var query = build_search_query(json);
         console.log(query)
-        var data = await get_data(query);
+        var data = await get_data_city24(query);
         if (typeof data === "string"){
             return data
         }
-        var processed_data = process_data(data);
+        var processed_data = process_data_city24(data);
         return processed_data;
     },
     get_house_count:async function get_house_count(){
@@ -40,7 +42,7 @@ function build_search_query(data){
     return query;
 }
 
-async function get_data(search_query){
+async function get_data_city24(search_query){
     //query city24.lv api
     var req = await fetch(search_query, {
         method: 'GET',
@@ -61,7 +63,7 @@ async function get_data(search_query){
     return seperate;
 }
 
-function process_data(data){
+function process_data_city24(data){
     //only take the useful data from response
     for (var i=0; i<data.length; i++){
 
@@ -87,4 +89,22 @@ function process_data(data){
         data[i] = return_data;
     }
     return data
+}
+
+async function get_data_sslv(search_query){
+    var req = await fetch(search_query, {
+        method: 'GET',
+        headers: {
+            'Accept': 'application/xml',
+        },
+    });
+
+    data = await req.text();
+
+    const dom = new jsdom.JSDOM("");
+    const DOMParser = dom.window.DOMParser;
+    const parser = new DOMParser;
+    const xml_doc = parser.parseFromString(data, "text/xml");
+
+    return xml_doc;
 }
