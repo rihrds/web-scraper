@@ -1,46 +1,65 @@
-const jsdom = require("jsdom");
+let Parser = require('rss-parser');
+let parser = new Parser();
 
-async function get_data_sslv(search_query){
-    var req = await fetch("https://www.ss.lv/lv/real-estate/homes-summer-residences/valka-and-reg/rss/", {
-        method: 'GET',
-        headers: {
-            'Accept': 'application/xml',
-        },
-    });
+const useful_data = ["Zem. pl.", "m2", "Cena"];
+const address_data = ["Pilsēta", "Pagasts", "Ciems", "Iela"]
+//conversion table
+const udata_to_db = {"Cena": "price", "Zem. pl.": "lot_size", "m2": "prop_size"};
 
-    var data = await req.text();
-    return data;
-}
+//JAPARTAISA LAI SKRAPE KATRU LAPU JO SS IR VIENKARSI TIK FANTASTISKS
 
-function process_data_sslv(data){
-    const dom = new jsdom.JSDOM("");
-    const DOMParser = dom.window.DOMParser;
-    const parser = new DOMParser;
-    const xml_doc = parser.parseFromString(data, "text/xml");
-
-    var items = Array.from(xml_doc.getElementsByTagName("item"));
-    console.log(items);
+(async () => {
+    let feed = await parser.parseURL('https://www.ss.lv/lv/real-estate/homes-summer-residences/jurmala/sell/rss/');
 
     data = [];
 
-    items.forEach(item => {
-        return_data = {};
-        nodes = item.childNodes;
-        //console.log(nodes[1].textContent);
-        return_data["listing"] = nodes[3].textContent; //sludinajuma adrese
-        return_data["date"] = Date.parse(nodes[5].textContent); //publicesanas datums
-        arr = nodes[7].textContent.split("<br")
-        arr.forEach( (e, i) => {arr[i] = e.replace("/>", "")})
-        arr = arr.filter(n => n); //parejais info
-        console.log(arr)
+    feed.items.forEach(item => {
+        var return_data = {};
+        return_data["url"] = item.link;
+        return_data["pub_date"] = Date.parse(item.pubDate); 
+
+        image_url = item.content.split("src=\"")[1].split("\"")[0].split("/");
+        var [name, url] = [image_url.pop(), image_url.join("/")]
+        return_data['image'] = url + "/" + item.link.split("/").slice(-4, -1).join("-") + "-" + name.split(".")[0] + ".800.jpg";
+        
+        console.log(item)
+
+        var cSnippet = item.contentSnippet.split("\n").filter(e => e.includes(": ")).join(": ") //hacks bet strada, vajadzetu gan nomainit velak
+        cSnippet = cSnippet.split(": ").filter(e => e!==": " && e!== undefined);
+
+        let csarr = {};
+
+
+        for (let i = 0; i < cSnippet.length-1; i += 2) {
+            csarr[cSnippet[i]] = cSnippet[i+1]
+        }
+
+        useful_data.forEach(e => {
+            if (csarr[e] != null){
+                return_data[udata_to_db[e]] = csarr[e].replace(/[ ,]/g, "");
+                delete csarr[e]
+            } else {
+                return_data[udata_to_db[e]] = "???"
+            }
+        });
+
+        address = []
+
+
+        address_data.forEach(e => {
+            if (csarr[e] != null){
+                address.push(csarr[e]);
+            }
+        });
+
+        return_data["address"] = address.join(", ")
+
+        //pilseta, pagasts, ciems, iela
+
+        return_data["prop_size"] += "m²"
+        console.log(return_data)
         data.push(return_data);
-    })
+    });
 
-    //console.log(data);
-}
-
-async function do_all(){
-    var dat = await get_data_sslv();
-    process_data_sslv(dat);
-}
-do_all();
+    //console.log(data)
+})();

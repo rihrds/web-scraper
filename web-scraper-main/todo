@@ -1,0 +1,24 @@
+taa vietaa lai butu input fieldi pec city24.lv, vajag uztaisit tadus universalakus fieldu nosaukumus
+un backendaa tikai pamainit taa lai pieskanotos lapai
+
+Uztaisit backendaa datubazi, ar pamata datiem (viss kas tiek paradits uz lapas) un tad ieskenet ss.lv un city24.lv.
+Kad aplikacija startejas, tad vins parbauda vai nav kadi izdzesti vai jauni pienakusi klat. (skatit jaunakie un tad iet viens pec otra lidz kamer ir id kas jau ir db?)
+Un tad lkm ik pec 30 min vai kkas tads vins atkal updatos.
+Ar jaunajiem ir ez, bet kaa efektivi izdzest vecos?
+
+Vajag ari patestet vai mobilais rezims tiesam strada. Manliekas tie img nesizojaas pareizi
+
+
+ss lv:
+topt[8][min]=
+&topt[8][max]=
+&topt[3][min]=
+&topt[3][max]=
+&topt[57][min]=
+&topt[57][max]=
+&topt[58][min]=
+&topt[58][max]=
+&topt[60][min]=1000
+&topt[60][max]=2000
+&sid=/lv/real-estate/homes-summer-residences/riga-region/all/sell/filter/
+&topt[11]=

@@ -1,0 +1,35 @@
+    <div class="mx-auto">
+        <nav aria-label="pageination" class="my-5">
+            <ul class="pagination justify-content-center pagination-lg">
+            <li class="page-item" id="prev">
+                <a class="page-link bg-dark text-light" href="" onclick="prev(); return false;" aria-label="Previous">
+                <span aria-hidden="true">&lt;</span>
+                </a>
+            </li>
+            <li class="page-item" id="next">
+                <a class="page-link bg-dark text-light" href="" onclick="next(); return false;" aria-label="Next">
+                <span aria-hidden="true">&gt;</span>
+                </a>
+            </li>
+            </ul>
+        </nav>
+    </div>
+    </div>
+    <script>
+        if (curr_page<=1){
+            document.getElementById("prev").remove();
+        }
+        if (document.getElementById("rezultati").childElementCount < 12 || document.getElementById("rezultati").children[10].childElementCount < 2){
+            document.getElementById("next").remove();
+        }
+
+        base_url = window.location.href.split("?")[0]+"?"+window.location.search.substr(1).substring(0,index_of_page)
+        function prev(){
+            window.location.href = base_url+(curr_page-1).toString();
+        }
+        function next(){
+            window.location.href = base_url+(curr_page+1).toString();
+        }
+    </script>
+</body>
+</html>

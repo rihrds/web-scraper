@@ -4,8 +4,6 @@ const helper = require('./../helper.js');
 
 ITEMS_PER_PAGE = 50;
 
-//sistema: image, price, prop_size, lot_size, url, address, pub_date
-
 db.serialize(async () => {
     //make all this run only if database doesn't exist
     db.run(`CREATE TABLE IF NOT EXISTS sludinajumi (

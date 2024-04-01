@@ -13,8 +13,6 @@
     "fs": "^0.0.1-security",
     "jsdom": "^24.0.0",
     "puppeteer": "^21.6.0",
-    "rss-parser": "^3.13.0",
-    "rss-url-parser": "^3.0.0",
     "sqlite3": "^5.1.7"
   }
 }
