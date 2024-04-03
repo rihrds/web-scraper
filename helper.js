@@ -22,8 +22,8 @@ module.exports = {
         var req = await fetch("https://api.city24.lv/lv_LV/search/count?address%5Bcc%5D=2&tsType=sale&unitType=House", {
             method: 'GET',
             headers: {
-                'Accept': 'application/json',
-            },
+                'Accept': 'application/json'
+            }
         })
     
         data = await req.json();
@@ -47,8 +47,8 @@ async function get_data_city24(search_query){
     var req = await fetch(search_query, {
         method: 'GET',
         headers: {
-            'Accept': 'application/json',
-        },
+            'Accept': 'application/json'
+        }
     })
 
     data = await req.json();
