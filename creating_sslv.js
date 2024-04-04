@@ -1,7 +1,7 @@
 import puppeteer from "puppeteer";
 import fs from 'node:fs';
 
-const data = fs.readFileSync('./url_list/sslv_list.txt', 'utf8').split("\r\n");
+const data = fs.readFileSync('./url_list/sslv_list-temp.txt', 'utf8').split("\r\n");
 
 
 (async () => {
@@ -12,7 +12,7 @@ const data = fs.readFileSync('./url_list/sslv_list.txt', 'utf8').split("\r\n");
     await page.goto('https://ss.lv');
   
     // Set screen size
-    await page.setViewport({width: 1080, height: 1024});
+    await page.setViewport({width: 1080, height: 720});
 
     for (var url of data){
         var p = 1;
@@ -38,4 +38,31 @@ const data = fs.readFileSync('./url_list/sslv_list.txt', 'utf8').split("\r\n");
             }
         }
     }
+
+    await page.goto('https://www.ss.lv/lv/show-selected/fDgReF4S.html');
+
+    await page.evaluate(() => {
+        var sections = document.querySelectorAll("tr[id=head_line]");
+
+        for (var section of sections){
+            var base_address = section.children[0].innerHTML.split(":").slice(-2).map(e => e.trim()).join(", ");
+
+            var parent = section.parentNode;
+
+            for (var i=1; i<parent.childElementCount; i++){
+                var data_parent = parent.children[i];
+                var data_nodes = data_parent.children;
+
+                var url = data_nodes[1].firstChild.href;
+
+                var image_url_parts = data_nodes[1].firstChild.firstChild.src.split("/");
+                var [last, ...image_1] = [image_url_parts.pop(), image_url_parts.join("/")];
+                var image_2 = url.split("/").slice(6, -1).join("-");
+
+                var image = image_1+"/"+image_2+"-"+last.replace("th2", "800");
+
+                var address = [base_address, data_nodes[3].firstChild.innerHTML.replace("<br>", ", ").replace(/(<b>)|(<\/b>)/g, "")].join(", ");
+            }
+        }
+    })
   })();
