@@ -3,8 +3,11 @@ const jsdom = require("jsdom");
 const base_query="https://api.city24.lv/lv_LV/search/realties?address[cc]=2&tsType=sale&unitType=House&adReach=1";
 
 const useful_data = ["main_image", "price", "property_size", "lot_size"];
+const udata_to_db = {"main_image": "image", "price":"price", "property_size": "prop_size", "lot_size":"lot_size"}
 const address_data = ["county_name", "parish_name", "city_name", "district_name", "street_name"];
 const ITEMS_PER_PAGE = 50;
+
+//sistema: image, price, prop_size, lot_size, url, address, pub_date
 
 
 module.exports = {
@@ -22,9 +25,9 @@ module.exports = {
         var req = await fetch("https://api.city24.lv/lv_LV/search/count?address%5Bcc%5D=2&tsType=sale&unitType=House", {
             method: 'GET',
             headers: {
-                'Accept': 'application/json'
-            }
-        })
+                'Accept': 'application/json',
+            },
+        });
     
         data = await req.json();
         return data[1].count
@@ -47,8 +50,8 @@ async function get_data_city24(search_query){
     var req = await fetch(search_query, {
         method: 'GET',
         headers: {
-            'Accept': 'application/json'
-        }
+            'Accept': 'application/json',
+        },
     })
 
     data = await req.json();
@@ -68,17 +71,27 @@ function process_data_city24(data){
     for (var i=0; i<data.length; i++){
 
         var return_data = {};
-        useful_data.forEach((param) => {(data[i][param]!= null) ? return_data[param]=data[i][param] : return_data[param]="???"});
+        useful_data.forEach((param) => {(data[i][param]!= null) ? return_data[udata_to_db[param]]=data[i][param] : return_data[udata_to_db[param]]="???"});
 
         //extract url from main_image value and replace placeholder {fmt:em} with the resolution
         //catch ir tad, ja nav bildes
         try{
-            return_data["main_image"] = return_data["main_image"]["url"].replace("{fmt:em}", "13");
+            return_data["image"] = return_data["image"]["url"].replace("{fmt:em}", "13");
         }
         catch{ 
-            return_data["main_image"] = "https://www.city24.lv/assets/img/placeholder/object_placeholder.46f176b8.svg"
+            return_data["image"] = "https://www.city24.lv/assets/img/placeholder/object_placeholder.46f176b8.svg"
         }
-        return_data["listing"] = "https://www.city24.lv/real-estate/houses-for-sale/a/" + data[i]["friendly_id"]; //tas a ir vienkarsi vajadzigs
+        return_data["url"] = "https://www.city24.lv/real-estate/houses-for-sale/a/" + data[i]["friendly_id"]; //tas a ir vienkarsi vajadzigs
+        return_data["pub_date"] = Date.parse(data[i]["date_published"]);
+
+        //add unit of measure to values
+        if (data[i]["lot_size_unit_id"] == 1){
+            return_data["lot_size"] += "m²"
+        } else if (data[i]["lot_size_unit_id"] == 5) {
+            return_data["lot_size"] += "ha"
+        }
+        return_data["prop_size"] += "m²"
+        return_data["price"] += "€"
 
 
         address = [];
