@@ -1,10 +1,11 @@
-const sqlite3 = require('sqlite3');
+import sqlite3 from 'sqlite3';
 const db = new sqlite3.Database("test.db");
-const helper = require('./../helper.js');
+import helper from './../helper.js';
 
-ITEMS_PER_PAGE = 50;
+const ITEMS_PER_PAGE = 50;
 
-//sistema: image, price, prop_size, lot_size, url, address, pub_date
+//sistema: image, price, prop_size, lot_size, url, address (pub_date is removed)
+//KKADS RANDOM-ASS ERRORS SQLITE_RANGE
 
 db.serialize(async () => {
     //make all this run only if database doesn't exist
@@ -23,15 +24,15 @@ db.serialize(async () => {
     var other_count = house_count%ITEMS_PER_PAGE;
     var loop_count = (house_count-other_count)/ITEMS_PER_PAGE;
     
-    for (i=1; i<=loop_count; i++){
+    for (var i=1; i<=loop_count; i++){
         console.log(`page ${i}`)
-        var slud = await helper.search({ page:  i.toString()});
+        var slud = await helper.search_city24({ page:  i.toString()});
         for (item=0; item<50; item++){
             stmt.run(Object.values(slud[item]));
         }
     }
-    var slud = await helper.search({ page:  (loop_count+1).toString()});
-    for (item=0; item<other_count; item++){
+    var slud = await helper.search_city24({ page:  (loop_count+1).toString()});
+    for (var item=0; item<other_count; item++){
         stmt.run(Object.values(slud[item]));
     }
 })

@@ -1,7 +1,7 @@
 import puppeteer from "puppeteer";
 import fs from 'node:fs';
 
-const data = fs.readFileSync('./url_list/sslv_list-temp.txt', 'utf8').split("\r\n");
+const urls = fs.readFileSync('./url_list/sslv_list.txt', 'utf8').split("\r\n");
 
 
 (async () => {
@@ -14,7 +14,7 @@ const data = fs.readFileSync('./url_list/sslv_list-temp.txt', 'utf8').split("\r\
     // Set screen size
     await page.setViewport({width: 1080, height: 720});
 
-    for (var url of data){
+    for (var url of urls){
         var p = 1;
 
         await page.goto(url, {waitUntil: "networkidle0"});
@@ -39,30 +39,62 @@ const data = fs.readFileSync('./url_list/sslv_list-temp.txt', 'utf8').split("\r\
         }
     }
 
-    await page.goto('https://www.ss.lv/lv/show-selected/fDgReF4S.html');
+    await page.goto('https://www.ss.lv/lv/show-selected/fDgReF4S.html', {waitUntil: "networkidle0"});
 
-    await page.evaluate(() => {
+    var data = await page.evaluate(() => {
+
+        var all_data = [];
+
         var sections = document.querySelectorAll("tr[id=head_line]");
 
         for (var section of sections){
             var base_address = section.children[0].innerHTML.split(":").slice(-2).map(e => e.trim()).join(", ");
+            console.log(base_address);
 
             var parent = section.parentNode;
 
+            //some have iela/ciems, some dont -> issue
+
             for (var i=1; i<parent.childElementCount; i++){
+
+                var return_data = {};
+
                 var data_parent = parent.children[i];
                 var data_nodes = data_parent.children;
 
-                var url = data_nodes[1].firstChild.href;
+                try {
+
+                return_data['url'] = data_nodes[1].firstChild.href;
 
                 var image_url_parts = data_nodes[1].firstChild.firstChild.src.split("/");
                 var [last, ...image_1] = [image_url_parts.pop(), image_url_parts.join("/")];
-                var image_2 = url.split("/").slice(6, -1).join("-");
+                var image_2 = return_data['url'].split("/").slice(6, -1).join("-");
 
-                var image = image_1+"/"+image_2+"-"+last.replace("th2", "800");
+                return_data['image'] = image_1+"/"+image_2+"-"+last.replace("th2", "800");
 
-                var address = [base_address, data_nodes[3].firstChild.innerHTML.replace("<br>", ", ").replace(/(<b>)|(<\/b>)/g, "")].join(", ");
+                return_data['address'] = [base_address, data_nodes[3].firstChild.innerHTML.replace("<br>", ", ").replace(/(<b>)|(<\/b>)/g, "")].join(", ");
+                
+                return_data['prop_size'] = data_nodes[4].firstChild.innerHTML.replace(/(<b>)|(<\/b>)/g, "") + " m²";
+
+                return_data['lot_size'] = data_nodes[7].firstChild.innerHTML.replace(/(<b>)|(<\/b>)/g, "");
+
+                return_data['price'] = data_nodes[8].firstChild.innerHTML.replace(/(<b>)|(<\/b>)/g, "").replace("  ", " ");}
+                catch {
+                    console.log(return_data)
+                }
+
+                all_data.push(return_data)
+                
             }
         }
-    })
+
+        return all_data;
+    });
+
+    //await page.close();
+    //await browser.close();
+
+    console.log(data);
+    console.log(data.length);
+
   })();
