@@ -48,12 +48,10 @@ const urls = fs.readFileSync('./url_list/sslv_list.txt', 'utf8').split("\r\n");
         var sections = document.querySelectorAll("tr[id=head_line]");
 
         for (var section of sections){
-            var base_address = section.children[0].innerHTML.split(":").slice(-2).map(e => e.trim()).join(", ");
-            console.log(base_address);
+            var has_detailed_address = (section.children[1].innerHTML == "Iela" || section.children[1].innerHTML == "Ciems")
+            var base_address = section.children[0].innerHTML.split(" : ").filter(e => e!= "Mājas, vasarnīcas").join(", ");
 
             var parent = section.parentNode;
-
-            //some have iela/ciems, some dont -> issue
 
             for (var i=1; i<parent.childElementCount; i++){
 
@@ -61,8 +59,6 @@ const urls = fs.readFileSync('./url_list/sslv_list.txt', 'utf8').split("\r\n");
 
                 var data_parent = parent.children[i];
                 var data_nodes = data_parent.children;
-
-                try {
 
                 return_data['url'] = data_nodes[1].firstChild.href;
 
@@ -72,15 +68,18 @@ const urls = fs.readFileSync('./url_list/sslv_list.txt', 'utf8').split("\r\n");
 
                 return_data['image'] = image_1+"/"+image_2+"-"+last.replace("th2", "800");
 
-                return_data['address'] = [base_address, data_nodes[3].firstChild.innerHTML.replace("<br>", ", ").replace(/(<b>)|(<\/b>)/g, "")].join(", ");
-                
-                return_data['prop_size'] = data_nodes[4].firstChild.innerHTML.replace(/(<b>)|(<\/b>)/g, "") + " m²";
+                //skatoties ir vai nav taa sekcija, maina datu atrasanas vietu
+                if (has_detailed_address){
+                    return_data['address'] = [base_address, data_nodes[3].firstChild.innerHTML.replace("<br>", ", ").replace(/(<b>)|(<\/b>)/g, "")].join(", ");
+                    return_data['prop_size'] = data_nodes[4].firstChild.innerHTML.replace(/(<b>)|(<\/b>)/g, "") + " m²";
+                    return_data['lot_size'] = data_nodes[7].firstChild.innerHTML.replace(/(<b>)|(<\/b>)/g, "");
+                    return_data['price'] = data_nodes[8].firstChild.innerHTML.replace(/(<b>)|(<\/b>)/g, "").replace("  ", " ");
+                } else {
+                    return_data['address'] = base_address;
+                    return_data['prop_size'] = data_nodes[3].firstChild.innerHTML.replace(/(<b>)|(<\/b>)/g, "") + " m²";
+                    return_data['lot_size'] = data_nodes[6].firstChild.innerHTML.replace(/(<b>)|(<\/b>)/g, "");
+                    return_data['price'] = data_nodes[7].firstChild.innerHTML.replace(/(<b>)|(<\/b>)/g, "").replace("  ", " ");
 
-                return_data['lot_size'] = data_nodes[7].firstChild.innerHTML.replace(/(<b>)|(<\/b>)/g, "");
-
-                return_data['price'] = data_nodes[8].firstChild.innerHTML.replace(/(<b>)|(<\/b>)/g, "").replace("  ", " ");}
-                catch {
-                    console.log(return_data)
                 }
 
                 all_data.push(return_data)
@@ -91,10 +90,6 @@ const urls = fs.readFileSync('./url_list/sslv_list.txt', 'utf8').split("\r\n");
         return all_data;
     });
 
-    //await page.close();
-    //await browser.close();
-
-    console.log(data);
-    console.log(data.length);
-
+    await page.close();
+    await browser.close();
   })();

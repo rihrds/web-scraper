@@ -1,5 +1,10 @@
 import puppeteer from "puppeteer";
 import fs from 'node:fs';
+import path from 'path';
+import {fileURLToPath} from 'url';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 //for city24
 const base_query="https://api.city24.lv/lv_LV/search/realties?address[cc]=2&tsType=sale&unitType=House&adReach=1";
@@ -9,13 +14,13 @@ const address_data = ["county_name", "parish_name", "city_name", "district_name"
 const ITEMS_PER_PAGE = 50;
 
 //for ss
-const urls = fs.readFileSync('./url_list/sslv_list.txt', 'utf8').split("\r\n");
+const urls = fs.readFileSync(path.resolve(__dirname, './url_list/sslv_list.txt'), 'utf8').split("\r\n");
 
-//sistema: image, price, prop_size, lot_size, url, address, pub_date
+//sistema: image, price, prop_size, lot_size, url, address
 
 
 var export_funcs = {
-    search:async function search_city24(json) {
+    search_city24:async function search_city24(json) {
         var query = build_search_query(json);
         console.log(query)
         var data = await get_data_city24(query);
@@ -37,7 +42,7 @@ var export_funcs = {
         return data[1].count
     },
     search_sslv:async function search_sslv(){
-        const browser = await puppeteer.launch({headless:false});
+        const browser = await puppeteer.launch({headless:true});
         const page = await browser.newPage();
     
         // Navigate the page to a URL
@@ -71,7 +76,7 @@ var export_funcs = {
             }
         }
 
-        await page.goto('https://www.ss.lv/lv/show-selected/fDgReF4S.html');
+        await page.goto('https://www.ss.lv/lv/show-selected/fDgReF4S.html', {waitUntil: "networkidle0"});
 
         var data = await page.evaluate(() => {
 
@@ -80,7 +85,8 @@ var export_funcs = {
             var sections = document.querySelectorAll("tr[id=head_line]");
 
             for (var section of sections){
-                var base_address = section.children[0].innerHTML.split(":").slice(-2).map(e => e.trim()).join(", ");
+                var has_detailed_address = (section.children[1].innerHTML == "Iela" || section.children[1].innerHTML == "Ciems")
+                var base_address = section.children[0].innerHTML.split(" : ").filter(e => e!= "Mājas, vasarnīcas" && e!= "Lauku viensētas").join(", ");
 
                 var parent = section.parentNode;
 
@@ -91,21 +97,35 @@ var export_funcs = {
                     var data_parent = parent.children[i];
                     var data_nodes = data_parent.children;
 
-                    return_data['url'] = data_nodes[1].firstChild.href;
+                    var url = data_nodes[1].firstChild.href;
 
                     var image_url_parts = data_nodes[1].firstChild.firstChild.src.split("/");
                     var [last, ...image_1] = [image_url_parts.pop(), image_url_parts.join("/")];
-                    var image_2 = return_data['url'].split("/").slice(6, -1).join("-");
+                    var image_2 = url.split("/").slice(6, -1).join("-");
 
-                    return_data['image'] = image_1+"/"+image_2+"-"+last.replace("th2", "800");
+                    var image = image_1+"/"+image_2+"-"+last.replace("th2", "800");
 
-                    return_data['address'] = [base_address, data_nodes[3].firstChild.innerHTML.replace("<br>", ", ").replace(/(<b>)|(<\/b>)/g, "")].join(", ");
+                    //skatoties ir vai nav taa sekcija, maina datu atrasanas vietu
+                    if (has_detailed_address){
+                        var address = [base_address, data_nodes[3].firstChild.innerHTML.replace("<br>", ", ").replace(/(<b>)|(<\/b>)/g, "")].join(", ");
+                        var prop_size = data_nodes[4].firstChild.innerHTML.replace(/(<b>)|(<\/b>)/g, "") + " m²";
+                        var lot_size = data_nodes[7].firstChild.innerHTML.replace(/(<b>)|(<\/b>)/g, "");
+                        var price = data_nodes[8].firstChild.innerHTML.replace(/(<b>)|(<\/b>)/g, "").replace("  ", " ");
+                    } else {
+                        var address = base_address;
+                        var prop_size = data_nodes[3].firstChild.innerHTML.replace(/(<b>)|(<\/b>)/g, "") + " m²";
+                        var lot_size = data_nodes[6].firstChild.innerHTML.replace(/(<b>)|(<\/b>)/g, "");
+                        var price = data_nodes[7].firstChild.innerHTML.replace(/(<b>)|(<\/b>)/g, "").replace("  ", " ");
+                    }
                     
-                    return_data['prop_size'] = data_nodes[4].firstChild.innerHTML.replace(/(<b>)|(<\/b>)/g, "") + " m²";
+                    //put it in correct order
+                    return_data['image'] = image;
+                    return_data['price'] = price;
+                    return_data['prop_size'] = prop_size;
+                    return_data['lot_size'] = lot_size;
+                    return_data['url'] = url;
+                    return_data['address'] = address;
 
-                    return_data['lot_size'] = data_nodes[7].firstChild.innerHTML.replace(/(<b>)|(<\/b>)/g, "");
-
-                    return_data['price'] = data_nodes[8].firstChild.innerHTML.replace(/(<b>)|(<\/b>)/g, "").replace("  ", " ");
 
                     all_data.push(return_data)
                     
@@ -117,10 +137,8 @@ var export_funcs = {
 
         await page.close();
         await browser.close();
-
-        console.log(data)
+        return data;
     }
-
 }
 
 
@@ -175,12 +193,12 @@ function process_data_city24(data){
 
         //add unit of measure to values
         if (data[i]["lot_size_unit_id"] == 1){
-            return_data["lot_size"] += "m²"
+            return_data["lot_size"] += " m²"
         } else if (data[i]["lot_size_unit_id"] == 5) {
-            return_data["lot_size"] += "ha"
+            return_data["lot_size"] += " ha."
         }
-        return_data["prop_size"] += "m²"
-        return_data["price"] += "€"
+        return_data["prop_size"] += " m²"
+        return_data["price"] += " €"
 
 
         var address = [];
