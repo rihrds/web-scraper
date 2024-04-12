@@ -9,7 +9,7 @@ const __dirname = path.dirname(__filename);
 //for city24
 const base_query="https://api.city24.lv/lv_LV/search/realties?address[cc]=2&tsType=sale&unitType=House&adReach=1";
 const useful_data = ["main_image", "price", "property_size", "lot_size"];
-const udata_to_db = {"main_image": "image", "price":"price", "property_size": "prop_size", "lot_size":"lot_size"}
+const udata_to_db = {"main_image": "$image", "price":"$price", "property_size": "$prop_size", "lot_size":"$lot_size"}
 const address_data = ["county_name", "parish_name", "city_name", "district_name", "street_name"];
 const ITEMS_PER_PAGE = 50;
 
@@ -108,23 +108,33 @@ var export_funcs = {
                     //skatoties ir vai nav taa sekcija, maina datu atrasanas vietu
                     if (has_detailed_address){
                         var address = [base_address, data_nodes[3].firstChild.innerHTML.replace("<br>", ", ").replace(/(<b>)|(<\/b>)/g, "")].join(", ");
-                        var prop_size = data_nodes[4].firstChild.innerHTML.replace(/(<b>)|(<\/b>)/g, "") + " m²";
-                        var lot_size = data_nodes[7].firstChild.innerHTML.replace(/(<b>)|(<\/b>)/g, "");
-                        var price = data_nodes[8].firstChild.innerHTML.replace(/(<b>)|(<\/b>)/g, "").replace("  ", " ");
+                        var prop_size = data_nodes[4].firstChild.innerHTML.replace(/(<b>)|(<\/b>)/g, "");
+                        var lot_size = data_nodes[7].firstChild.innerHTML.replace(/(<b>)|(<\/b>)/g, "").split(" ");
+                        var lot_size_unit = lot_size[1]
+                        var lot_size = lot_size[0]
+                        var price = data_nodes[8].firstChild.innerHTML.replace(/(<b>)|(<\/b>)/g, "").replace("  ", " ").split(" ")[0].replace(",", "");
                     } else {
                         var address = base_address;
-                        var prop_size = data_nodes[3].firstChild.innerHTML.replace(/(<b>)|(<\/b>)/g, "") + " m²";
-                        var lot_size = data_nodes[6].firstChild.innerHTML.replace(/(<b>)|(<\/b>)/g, "");
-                        var price = data_nodes[7].firstChild.innerHTML.replace(/(<b>)|(<\/b>)/g, "").replace("  ", " ");
+                        var prop_size = data_nodes[3].firstChild.innerHTML.replace(/(<b>)|(<\/b>)/g, "");
+                        var lot_size = data_nodes[6].firstChild.innerHTML.replace(/(<b>)|(<\/b>)/g, "").split(" ");
+                        var lot_size_unit = lot_size[1]
+                        var lot_size = lot_size[0]
+                        var price = data_nodes[7].firstChild.innerHTML.replace(/(<b>)|(<\/b>)/g, "").replace("  ", " ").split(" ")[0].replace(",", "");
                     }
                     
                     //put it in correct order
-                    return_data['image'] = image;
-                    return_data['price'] = price;
-                    return_data['prop_size'] = prop_size;
-                    return_data['lot_size'] = lot_size;
-                    return_data['url'] = url;
-                    return_data['address'] = address;
+                    return_data['$image'] = image;
+                    return_data['$price'] = price;
+                    return_data['$prop_size'] = prop_size;
+                    return_data['$lot_size'] = lot_size;
+                    if (lot_size_unit == undefined){
+                        return_data['$lot_size_unit'] = "m²";
+                    }
+                    else{
+                        return_data['$lot_size_unit'] = lot_size_unit;
+                    }
+                    return_data['$url'] = url;
+                    return_data['$address'] = address;
 
 
                     all_data.push(return_data)
@@ -134,7 +144,6 @@ var export_funcs = {
 
             return all_data;
         });
-
         await page.close();
         await browser.close();
         return data;
@@ -183,32 +192,31 @@ function process_data_city24(data){
         //extract url from main_image value and replace placeholder {fmt:em} with the resolution
         //catch ir tad, ja nav bildes
         try{
-            return_data["image"] = return_data["image"]["url"].replace("{fmt:em}", "13");
+            return_data["$image"] = return_data["$image"]["url"].replace("{fmt:em}", "13");
         }
         catch{ 
-            return_data["image"] = "https://www.city24.lv/assets/img/placeholder/object_placeholder.46f176b8.svg"
+            return_data["$image"] = "https://www.city24.lv/assets/img/placeholder/object_placeholder.46f176b8.svg"
         }
-        return_data["url"] = "https://www.city24.lv/real-estate/houses-for-sale/a/" + data[i]["friendly_id"]; //tas a ir vienkarsi vajadzigs
-        // return_data["pub_date"] = Date.parse(data[i]["date_published"]);
+        return_data["$url"] = "https://www.city24.lv/real-estate/houses-for-sale/a/" + data[i]["friendly_id"]; //tas a ir vienkarsi vajadzigs
 
         //add unit of measure to values
         if (data[i]["lot_size_unit_id"] == 1){
-            return_data["lot_size"] += " m²"
+            return_data["$lot_size_unit"] = "m²"
         } else if (data[i]["lot_size_unit_id"] == 5) {
-            return_data["lot_size"] += " ha."
+            return_data["$lot_size_unit"] = "ha."
         }
-        return_data["prop_size"] += " m²"
-        return_data["price"] += " €"
 
 
         var address = [];
         address_data.forEach((param) => { if(data[i]["address"][param]!= null) address.push(data[i]["address"][param])});
 
-        return_data["address"] = address.join(", ");
+        return_data["$address"] = address.join(", ");
 
         data[i] = return_data;
     }
     return data
 }
+
+
 
 export default export_funcs;
