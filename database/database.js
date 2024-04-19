@@ -1,10 +1,18 @@
 import sqlite3 from 'sqlite3';
-const db = new sqlite3.Database("./database.db");
+import path from 'path';
+import {fileURLToPath} from 'url';
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+const db = new sqlite3.Database(path.resolve(__dirname, "./database.db"));
+const helper_location = path.resolve(__dirname, './../helper.js');
+console.log(helper_location);
 import helper from './../helper.js';
 
 const ITEMS_PER_PAGE = 50;
 
-/*db.serialize(async () => {
+function create_db() {
+    db.serialize(async () => {
     //make all this run only if database doesn't exist
     db.run(`CREATE TABLE IF NOT EXISTS sludinajumi (
             image varchar(255),
@@ -42,38 +50,40 @@ const ITEMS_PER_PAGE = 50;
     for (item=0; item<Object.keys(slud).length; item++){
         stmt.run(Object.values(slud[item]));
     }
-})*/
+})};
 
-function retrieve_data(conds) {
+var export_funcs = {
+    retrieve_data:function retrieve_data(conds) {
 
-    var query = "SELECT * FROM sludinajumi "
-    if (conds){
-        query += "WHERE "
-    }
-
-    console.log(Object.keys(conds))
-
-    var poss_conds = ["$min_price", "$max_price", "$min_prop_size", "$max_prop_size", "$min_lot_size", "$max_lot_size", "$address"]
-    var conversion = {"$min_price":"price >= $min_price", "$max_price":"price <= $max_price", "$min_prop_size":"prop_size >= $min_prop_size", "$max_prop_size":"prop_size <= $max_prop_size", "$min_lot_size":"lot_size >= $min_lot_size", "$max_lot_size":"lot_size <= $max_lot_size", "$address":"address LIKE '%' || $address || '%'"}
-    var query_add_parts = []
-    for (var key of Object.keys(conds)){
-        console.log(key)
-        if (poss_conds.includes(key)){
-            query_add_parts.push(conversion[key]);
+        var query = "SELECT * FROM sludinajumi "
+        if (conds){
+            query += "WHERE "
         }
-    }
-
-    query += query_add_parts.join(" AND ");
-    console.log(query);
-
-    //also add tht fields can equal ???
-
-    db.serialize( () => {
-        const stmt = db.prepare(query);
-        stmt.all(conds, (err, rows) => {
-            console.log(rows)
+    
+        console.log(Object.keys(conds))
+    
+        var poss_conds = ["$min_price", "$max_price", "$min_prop_size", "$max_prop_size", "$min_lot_size", "$max_lot_size", "$address"]
+        var conversion = {"$min_price":"price >= $min_price", "$max_price":"price <= $max_price", "$min_prop_size":"prop_size >= $min_prop_size", "$max_prop_size":"prop_size <= $max_prop_size", "$min_lot_size":"lot_size >= $min_lot_size", "$max_lot_size":"lot_size <= $max_lot_size", "$address":"address LIKE '%' || $address || '%'"}
+        var query_add_parts = []
+        for (var key of Object.keys(conds)){
+            if (poss_conds.includes(key)){
+                query_add_parts.push(conversion[key]);
+            }
+        }
+    
+        query += "(" + query_add_parts.join(" AND ") + ")";
+        query += " OR ( prop_size = '???' AND " + query_add_parts.filter(n => !n.includes("prop_size")).join(" AND ") + ")"
+        query += " OR ( lot_size = '???' AND " + query_add_parts.filter(n => !n.includes("lot_size")).join(" AND ") + ");"
+    
+        return new Promise((resolve, reject) => {
+            db.serialize( () => {
+                const stmt = db.prepare(query);
+                stmt.all(conds, (err, rows) => {
+                    resolve(rows);
+                });
+            });
         });
-    });
+    }
 }
 
-retrieve_data({"$min_price": 2800000, "$max_price":2800000, "$min_prop_size":400, "$max_prop_size":10000000000});
+export default export_funcs;

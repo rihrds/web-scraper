@@ -22,7 +22,6 @@ const urls = fs.readFileSync(path.resolve(__dirname, './url_list/sslv_list.txt')
 var export_funcs = {
     search_city24:async function search_city24(json) {
         var query = build_search_query(json);
-        console.log(query)
         var data = await get_data_city24(query);
         if (typeof data === "string"){
             return data
@@ -80,13 +79,23 @@ var export_funcs = {
 
         var data = await page.evaluate(() => {
 
+            const field_conversion = {"Iela": "address", "Ciems":"address", "m2":"prop_size", "Stāvi":"floors", "Ist.":"rooms", "Zem. pl.":"lot_size", "Cena":"price"}
+
             var all_data = [];
 
             var sections = document.querySelectorAll("tr[id=head_line]");
 
             for (var section of sections){
-                var has_detailed_address = (section.children[1].innerHTML == "Iela" || section.children[1].innerHTML == "Ciems")
+                //var has_detailed_address = (section.children[1].innerHTML == "Iela" || section.children[1].innerHTML == "Ciems")
                 var base_address = section.children[0].innerHTML.split(" : ").filter(e => e!= "Mājas, vasarnīcas" && e!= "Lauku viensētas").join(", ");
+
+                var order = ["buffer", "buffer", "buffer"]
+
+                Array.from(section.children).slice(1).forEach(e => {
+                    order.push(field_conversion[e.innerHTML])
+                });
+
+                console.log(order)
 
                 var parent = section.parentNode;
 
@@ -105,26 +114,25 @@ var export_funcs = {
 
                     var image = image_1+"/"+image_2+"-"+last.replace("th2", "800");
 
-                    //skatoties ir vai nav taa sekcija, maina datu atrasanas vietu
-                    if (has_detailed_address){
-                        var address = [base_address, data_nodes[3].firstChild.innerHTML.replace("<br>", ", ").replace(/(<b>)|(<\/b>)/g, "")].join(", ");
-                        var prop_size = data_nodes[4].firstChild.innerHTML.replace(/(<b>)|(<\/b>)/g, "");
-                        var lot_size = data_nodes[7].firstChild.innerHTML.replace(/(<b>)|(<\/b>)/g, "").split(" ");
-                        var lot_size_unit = lot_size[1]
-                        var lot_size = lot_size[0]
-                        var price = data_nodes[8].firstChild.innerHTML.replace(/(<b>)|(<\/b>)/g, "").replace("  ", " ").split(" ")[0].replace(",", "");
+                    if (order.includes('address')){
+                        var address = [base_address, data_nodes[order.indexOf("address")].firstChild.innerHTML.replace("<br>", ", ").replace(/(<b>)|(<\/b>)/g, "")].join(", ");
                     } else {
                         var address = base_address;
-                        var prop_size = data_nodes[3].firstChild.innerHTML.replace(/(<b>)|(<\/b>)/g, "");
-                        var lot_size = data_nodes[6].firstChild.innerHTML.replace(/(<b>)|(<\/b>)/g, "").split(" ");
-                        var lot_size_unit = lot_size[1]
-                        var lot_size = lot_size[0]
-                        var price = data_nodes[7].firstChild.innerHTML.replace(/(<b>)|(<\/b>)/g, "").replace("  ", " ").split(" ")[0].replace(",", "");
                     }
+
+                    var prop_size = data_nodes[order.indexOf("prop_size")].firstChild.innerHTML.replace(/(<b>)|(<\/b>)/g, "");
+                    //var floors = data_nodes[order.indexOf("floors")].firstChild.innerHTML.replace(/(<b>)|(<\/b>)/g, "");
+                    //var rooms = data_nodes[order.indexOf("rooms")].firstChild.innerHTML.replace(/(<b>)|(<\/b>)/g, "");
+                    var lot_size = data_nodes[order.indexOf("lot_size")].firstChild.innerHTML.replace(/(<b>)|(<\/b>)/g, "").split(" ");
+                    var lot_size_unit = lot_size[1]
+                    var lot_size = lot_size[0]
+                    var price = data_nodes[order.indexOf("price")].firstChild.innerHTML.replace(/(<b>)|(<\/b>)/g, "").replace("  ", " ").split(" ")[0].replaceAll(",", "");
                     
                     //put it in correct order
                     return_data['$image'] = image;
                     return_data['$price'] = price;
+                    //return_data['$floors'] = floors;
+                    //return_data['$rooms'] = rooms;
                     return_data['$prop_size'] = prop_size;
                     return_data['$lot_size'] = lot_size;
                     if (lot_size_unit == undefined){
@@ -191,6 +199,7 @@ function process_data_city24(data){
 
         //extract url from main_image value and replace placeholder {fmt:em} with the resolution
         //catch ir tad, ja nav bildes
+        //return_data["$floors"] = return_data["$floors"]["TOTAL_FLOORS"];
         try{
             return_data["$image"] = return_data["$image"]["url"].replace("{fmt:em}", "13");
         }
