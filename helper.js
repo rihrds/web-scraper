@@ -14,9 +14,23 @@ const address_data = ["county_name", "parish_name", "city_name", "district_name"
 const ITEMS_PER_PAGE = 50;
 
 //for ss
-const urls = fs.readFileSync(path.resolve(__dirname, './url_list/sslv_list.txt'), 'utf8').split("\r\n");
+const urls = fs.readFileSync(path.resolve(__dirname, './helper_txt_files/sslv_list.txt'), 'utf8').split("\r\n");
 
-//sistema: image, price, prop_size, lot_size, url, address
+var pag_nov = fs.readFileSync(path.resolve(__dirname, './helper_txt_files/pag_nov.txt'), 'utf8').split("\r\n");
+var temp_array = []
+var pag_nov_keys = []
+pag_nov.forEach((e) => {
+    var a = {}
+    if (e.includes("pag.")){
+        pag_nov_keys.push((e.split("pag. ")[0]+"pag."))
+        a[(e.split("pag. ")[0]+"pag.")] = e.split("pag. ")[1].trim();
+    } else if (e.includes("l. t. ")){
+        pag_nov_keys.push((e.split("l. t. ")[0]+"l. t."))
+        a[(e.split("l. t. ")[0]+"l. t.")] = e.split("l. t. ")[1].trim();
+    }
+    temp_array.push(a);
+});
+pag_nov = temp_array;
 
 
 var export_funcs = {
@@ -41,7 +55,7 @@ var export_funcs = {
         return data[1].count
     },
     search_sslv:async function search_sslv(){
-        const browser = await puppeteer.launch({headless:true});
+        const browser = await puppeteer.launch({headless:false});
         const page = await browser.newPage();
     
         // Navigate the page to a URL
@@ -52,8 +66,14 @@ var export_funcs = {
 
         for (var url of urls){
             var p = 1;
-
-            await page.goto(url, {waitUntil: "networkidle0"});
+            try {
+                await page.goto(url, {waitUntil: "networkidle0"});
+            } catch {
+                //sometimes it glitches because of ads so have to reload
+                console.log("net error")
+                await page.waitForTimeout(5000);
+                await page.goto(url, {waitUntil: "networkidle0"});
+            }
             while (true) {
                 p++;
                 var next_page_url = await page.evaluate(() => {
@@ -77,7 +97,7 @@ var export_funcs = {
 
         await page.goto('https://www.ss.lv/lv/show-selected/fDgReF4S.html', {waitUntil: "networkidle0"});
 
-        var data = await page.evaluate(() => {
+        var data = await page.evaluate((pag_nov, pag_nov_keys) => {
 
             const field_conversion = {"Iela": "address", "Ciems":"address", "m2":"prop_size", "Stāvi":"floors", "Ist.":"rooms", "Zem. pl.":"lot_size", "Cena":"price"}
 
@@ -86,16 +106,13 @@ var export_funcs = {
             var sections = document.querySelectorAll("tr[id=head_line]");
 
             for (var section of sections){
-                //var has_detailed_address = (section.children[1].innerHTML == "Iela" || section.children[1].innerHTML == "Ciems")
-                var base_address = section.children[0].innerHTML.split(" : ").filter(e => e!= "Mājas, vasarnīcas" && e!= "Lauku viensētas").join(", ");
+                var region = section.children[0].innerHTML.split(" : ").filter(e => e!= "Mājas, vasarnīcas" && e!= "Lauku viensētas").join(", ");
 
                 var order = ["buffer", "buffer", "buffer"]
 
                 Array.from(section.children).slice(1).forEach(e => {
                     order.push(field_conversion[e.innerHTML])
                 });
-
-                console.log(order)
 
                 var parent = section.parentNode;
 
@@ -115,14 +132,41 @@ var export_funcs = {
                     var image = image_1+"/"+image_2+"-"+last.replace("th2", "800");
 
                     if (order.includes('address')){
-                        var address = [base_address, data_nodes[order.indexOf("address")].firstChild.innerHTML.replace("<br>", ", ").replace(/(<b>)|(<\/b>)/g, "")].join(", ");
+                        var address = data_nodes[order.indexOf("address")].firstChild.innerHTML.replace("<br>", ", ").replace(/(<b>)|(<\/b>)/g, "");
                     } else {
-                        var address = base_address;
+                        var address = "";
                     }
 
+                    //cannot convert null to object, kad ir [0] klat
+                    var full_address = [region, address].join(", ").split(", ")
+                    if (full_address.slice(0, 1).includes(" raj")){
+                        var full_address = full_address.slice(1);
+                        if (full_address.slice(0, 1).includes("pag.") || full_address.slice(0, 1).includes(" l. t.")){
+                            region = Object.values(pag_nov[pag_nov_keys.indexOf(full_address[0])])[0]
+                        }
+                    } else {
+                        region = full_address[0]
+                    }
+                    var address = full_address.slice(1).join(", ")
+
+                    /*try{
+                        if (region.includes(" raj")){
+                        //VAJAG PIEVIENOT VECOS NOVADUS UZ JAUNAJIEM + PASKATITIES PAGASTUS KAS VARBUT ATRODAS [2] POZICIJA + PILSETAS UZ NOVADIEM
+                        var ind = 0
+                        ind = pag_nov_keys.indexOf([region, address].join(", ").split(", ")[1]);
+                        region = Object.values(pag_nov[ind])[0]
+                        }
+                    }
+                    catch {
+                        region = [region, address].join(", ").split(", ")[1]
+                        }
+                    try {
+                        address = [region, address].join(", ").split(", ").slice(2).join(", ")
+                    } catch {
+                        address = "-"
+                    }*/
+
                     var prop_size = data_nodes[order.indexOf("prop_size")].firstChild.innerHTML.replace(/(<b>)|(<\/b>)/g, "");
-                    //var floors = data_nodes[order.indexOf("floors")].firstChild.innerHTML.replace(/(<b>)|(<\/b>)/g, "");
-                    //var rooms = data_nodes[order.indexOf("rooms")].firstChild.innerHTML.replace(/(<b>)|(<\/b>)/g, "");
                     var lot_size = data_nodes[order.indexOf("lot_size")].firstChild.innerHTML.replace(/(<b>)|(<\/b>)/g, "").split(" ");
                     var lot_size_unit = lot_size[1]
                     var lot_size = lot_size[0]
@@ -131,8 +175,6 @@ var export_funcs = {
                     //put it in correct order
                     return_data['$image'] = image;
                     return_data['$price'] = price;
-                    //return_data['$floors'] = floors;
-                    //return_data['$rooms'] = rooms;
                     return_data['$prop_size'] = prop_size;
                     return_data['$lot_size'] = lot_size;
                     if (lot_size_unit == undefined){
@@ -142,8 +184,8 @@ var export_funcs = {
                         return_data['$lot_size_unit'] = lot_size_unit;
                     }
                     return_data['$url'] = url;
-                    return_data['$address'] = address;
-
+                    return_data["$region"] = region;
+                    return_data["$address"] = address;
 
                     all_data.push(return_data)
                     
@@ -151,13 +193,12 @@ var export_funcs = {
             }
 
             return all_data;
-        });
+        }, pag_nov, pag_nov_keys);
         await page.close();
         await browser.close();
         return data;
     }
 }
-
 
 function build_search_query(data){
     //convert data object to get request
@@ -219,7 +260,7 @@ function process_data_city24(data){
         var address = [];
         address_data.forEach((param) => { if(data[i]["address"][param]!= null) address.push(data[i]["address"][param])});
 
-        return_data["$address"] = address.join(", ");
+        [return_data["$region"], return_data["$address"]] = [address[0], address.slice(1).join(", ")];
 
         data[i] = return_data;
     }
