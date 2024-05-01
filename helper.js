@@ -16,9 +16,15 @@ const ITEMS_PER_PAGE = 50;
 //for ss
 const urls = fs.readFileSync(path.resolve(__dirname, './helper_txt_files/sslv_list.txt'), 'utf8').split("\r\n");
 
+//for ss
 var pag_nov = fs.readFileSync(path.resolve(__dirname, './helper_txt_files/pag_nov.txt'), 'utf8').split("\r\n");
+
+//for city24
+var nov_nov = fs.readFileSync(path.resolve(__dirname, './helper_txt_files/nov_nov.txt'), 'utf8').split("\r\n");
+
 var temp_array = []
 var pag_nov_keys = []
+
 pag_nov.forEach((e) => {
     var a = {}
     if (e.includes("pag.")){
@@ -27,10 +33,25 @@ pag_nov.forEach((e) => {
     } else if (e.includes("l. t. ")){
         pag_nov_keys.push((e.split("l. t. ")[0]+"l. t."))
         a[(e.split("l. t. ")[0]+"l. t.")] = e.split("l. t. ")[1].trim();
+    } else {
+        pag_nov_keys.push((e.split(", ")[0]))
+        a[(e.split(", ")[0])] = e.split(", ")[1].trim();
     }
     temp_array.push(a);
 });
-pag_nov = temp_array;
+
+pag_nov = temp_array
+
+var nov_nov_keys = []
+temp_array = []
+nov_nov.forEach((e) => {
+    var a = {}
+    nov_nov_keys.push((e.split(", ")[0]))
+    a[(e.split(", ")[0])] = e.split(", ")[1].trim();
+    temp_array.push(a);
+});
+
+nov_nov = temp_array;
 
 
 var export_funcs = {
@@ -55,7 +76,7 @@ var export_funcs = {
         return data[1].count
     },
     search_sslv:async function search_sslv(){
-        const browser = await puppeteer.launch({headless:false});
+        const browser = await puppeteer.launch({headless:"new"});
         const page = await browser.newPage();
     
         // Navigate the page to a URL
@@ -67,12 +88,12 @@ var export_funcs = {
         for (var url of urls){
             var p = 1;
             try {
-                await page.goto(url, {waitUntil: "networkidle0"});
+                await page.goto(url, {waitUntil: 'load', timeout: 0});
             } catch {
                 //sometimes it glitches because of ads so have to reload
                 console.log("net error")
                 await page.waitForTimeout(5000);
-                await page.goto(url, {waitUntil: "networkidle0"});
+                await page.goto(url, {waitUntil: 'load', timeout: 0});
             }
             while (true) {
                 p++;
@@ -90,12 +111,12 @@ var export_funcs = {
                 if (next_page_url == '' || next_page_url == url){
                     break
                 } else {
-                    await page.goto(url+"page"+p.toString()+".html", {waitUntil: "networkidle0"});
+                    await page.goto(url+"page"+p.toString()+".html", {waitUntil: 'load', timeout: 0});
                 }
             }
         }
 
-        await page.goto('https://www.ss.lv/lv/show-selected/fDgReF4S.html', {waitUntil: "networkidle0"});
+        await page.goto('https://www.ss.lv/lv/show-selected/fDgReF4S.html', {waitUntil: 'load', timeout: 0});
 
         var data = await page.evaluate((pag_nov, pag_nov_keys) => {
 
@@ -107,6 +128,7 @@ var export_funcs = {
 
             for (var section of sections){
                 var region = section.children[0].innerHTML.split(" : ").filter(e => e!= "Mājas, vasarnīcas" && e!= "Lauku viensētas").join(", ");
+                var changed_reg = false
 
                 var order = ["buffer", "buffer", "buffer"]
 
@@ -134,37 +156,34 @@ var export_funcs = {
                     if (order.includes('address')){
                         var address = data_nodes[order.indexOf("address")].firstChild.innerHTML.replace("<br>", ", ").replace(/(<b>)|(<\/b>)/g, "");
                     } else {
-                        var address = "";
+                        var address = [""];
                     }
 
                     //cannot convert null to object, kad ir [0] klat
                     var full_address = [region, address].join(", ").split(", ")
-                    if (full_address.slice(0, 1).includes(" raj")){
-                        var full_address = full_address.slice(1);
-                        if (full_address.slice(0, 1).includes("pag.") || full_address.slice(0, 1).includes(" l. t.")){
+                    console.log(full_address[0])
+                    if (full_address[0].includes(" raj")){
+                        full_address = full_address.slice(1);
+                        if (full_address[0].includes("pag") || full_address[0].includes("l. t.")){
                             region = Object.values(pag_nov[pag_nov_keys.indexOf(full_address[0])])[0]
+                        } else {
+                            try{
+                            region = Object.values(pag_nov[pag_nov_keys.indexOf(full_address[0])])[0]
+                            full_address = full_address.slice(1); } catch {
+                                console.log(full_address)
+                            }
                         }
-                    } else {
-                        region = full_address[0]
-                    }
-                    var address = full_address.slice(1).join(", ")
-
-                    /*try{
-                        if (region.includes(" raj")){
-                        //VAJAG PIEVIENOT VECOS NOVADUS UZ JAUNAJIEM + PASKATITIES PAGASTUS KAS VARBUT ATRODAS [2] POZICIJA + PILSETAS UZ NOVADIEM
-                        var ind = 0
-                        ind = pag_nov_keys.indexOf([region, address].join(", ").split(", ")[1]);
-                        region = Object.values(pag_nov[ind])[0]
+                        changed_reg = true
+                    } else if (!full_address[0].includes(" raj") && !changed_reg) {
+                        try {
+                        region = Object.values(pag_nov[pag_nov_keys.indexOf(full_address[0])])[0]
+                        full_address = full_address.slice(1);
+                        changed_reg = true}
+                        catch {
+                            console.log(full_address)
                         }
-                    }
-                    catch {
-                        region = [region, address].join(", ").split(", ")[1]
-                        }
-                    try {
-                        address = [region, address].join(", ").split(", ").slice(2).join(", ")
-                    } catch {
-                        address = "-"
-                    }*/
+                    } else if (!full_address[0].includes(" raj") && changed_reg) {full_address = full_address.slice(1);}
+                    address = full_address.join(", ")
 
                     var prop_size = data_nodes[order.indexOf("prop_size")].firstChild.innerHTML.replace(/(<b>)|(<\/b>)/g, "");
                     var lot_size = data_nodes[order.indexOf("lot_size")].firstChild.innerHTML.replace(/(<b>)|(<\/b>)/g, "").split(" ");
@@ -260,7 +279,7 @@ function process_data_city24(data){
         var address = [];
         address_data.forEach((param) => { if(data[i]["address"][param]!= null) address.push(data[i]["address"][param])});
 
-        [return_data["$region"], return_data["$address"]] = [address[0], address.slice(1).join(", ")];
+        [return_data["$region"], return_data["$address"]] = [Object.values(nov_nov[nov_nov_keys.indexOf(address[0])])[0], address.slice(1).join(", ")];
 
         data[i] = return_data;
     }

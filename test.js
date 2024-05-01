@@ -1,5 +1,12 @@
 import db from './database/database.js'
 
 (async () => {
-    await db.retrieve_data({"$min_price": 0, "$max_price":2800000,"$max_prop_size":10000000000});
+    var regions = await db.retrieve_data({"$min_price":0});
+    var regs = []
+    regions.forEach(element => {
+        regs.push(Object.values(element)[0])
+    });
+    regs = [...new Set(regs)]
+    console.log(regs.length)
+    //2 par daudz
 })();

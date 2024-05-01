@@ -32,7 +32,7 @@ function create_db() {
     var house_count = await helper.get_house_count();
     
     //city24
-    /*var other_count = house_count%ITEMS_PER_PAGE;
+    var other_count = house_count%ITEMS_PER_PAGE;
     var loop_count = (house_count-other_count)/ITEMS_PER_PAGE;
     
     for (var i=1; i<=loop_count; i++){
@@ -45,7 +45,7 @@ function create_db() {
     var slud = await helper.search_city24({ page:  (loop_count+1).toString()});
     for (var item=0; item<other_count; item++){
         stmt.run(slud[item]);
-    }*/
+    }
 
     //ss_lv
     console.log("Started from ss_lv");
@@ -59,7 +59,7 @@ function create_db() {
 var export_funcs = {
     retrieve_data:function retrieve_data(conds) {
 
-        var query = "SELECT * FROM sludinajumi "
+        var query = "SELECT region FROM sludinajumi "
         if (conds){
             query += "WHERE "
         }
@@ -84,7 +84,7 @@ var export_funcs = {
         if (Object.keys(conds).includes("lot_size")){
             query += " OR ( lot_size = '???' AND " + query_add_parts.filter(n => !n.includes("lot_size")).join(" AND ") + ")"
         }
-        query += ` ORDER BY price ASC LIMIT ${results_per_page} OFFSET ${((curr_page*results_per_page)-results_per_page)};`;
+        //query += ` ORDER BY price ASC LIMIT ${results_per_page} OFFSET ${((curr_page*results_per_page)-results_per_page)};`;
 
         //add order by based on user input
         console.log(query);
@@ -102,4 +102,4 @@ var export_funcs = {
 
 export default export_funcs;
 
-create_db();
+//create_db();

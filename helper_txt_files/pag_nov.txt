@@ -9,7 +9,6 @@ Aknīstes pag. Jēkabpils nov.
 Allažu pag. Siguldas nov.
 Alojas pag. Limbažu nov.
 Alsungas pag. Kuldīgas nov.
-Alsungas pag. Alsungas nov.
 Alsviķu pag. Alūksnes nov.
 Amatas pag. Cēsu nov.
 Ambeļu pag. Augšdaugavas nov.
@@ -31,7 +30,6 @@ Babītes pag. Mārupes nov.
 Baldones pag. Ķekavas nov.
 Balgales pag. Talsu nov.
 Baltinavas pag. Balvu nov.
-Baltinavas pag. Baltinavas nov.
 Balvu pag. Balvu nov.
 Barkavas pag. Madonas nov.
 Bebrenes pag. Augšdaugavas nov.
@@ -65,7 +63,6 @@ Bērziņu pag. Krāslavas nov.
 Bērzkalnes pag. Balvu nov.
 Bērzpils pag. Balvu nov.
 Carnikavas pag. Ādažu nov.
-Carnikavas pag. Rīgas raj.
 Cenu pag. Jelgavas nov.
 Ceraukstes pag. Bauskas nov.
 Cesvaines pag. Madonas nov.
@@ -114,7 +111,6 @@ Gaiķu pag. Saldus nov.
 Galgauskas pag. Gulbenes nov.
 Galēnu pag. Preiļu nov.
 Garkalnes pag. Ropažu nov.
-Garkalnes pag. Rīgas raj.
 Gaujienas pag. Smiltenes nov.
 Gaviezes pag. Dienvidkurzemes nov.
 Glūdas pag. Jelgavas nov.
@@ -127,7 +123,6 @@ Grāveru pag. Krāslavas nov.
 Gudenieku pag. Kuldīgas nov.
 Gārsenes pag. Jēkabpils nov.
 Iecavas pag. Bauskas nov.
-Iecavas pag. Iecavas nov.
 Ilzenes pag. Alūksnes nov.
 Ilzeskalna pag. Rēzeknes nov.
 Indras pag. Krāslavas nov.
@@ -229,7 +224,6 @@ Lutriņu pag. Saldus nov.
 Lēdmanes pag. Ogres nov.
 Lēdurgas pag. Siguldas nov.
 Lībagu pag. Talsu nov.
-Līdumnieku pag. Daugavpils raj.
 Līdumnieku pag. Ludzas nov.
 Līgatnes pag. Cēsu nov.
 Līgo pag. Gulbenes nov.
@@ -253,20 +247,16 @@ Meņģeles pag. Ogres nov.
 Mežotnes pag. Bauskas nov.
 Mežvidu pag. Ludzas nov.
 Mežāres pag. Jēkabpils nov.
-Miglinieku pag. Ludzas raj.
 Mores pag. Siguldas nov.
 Murmastienes pag. Varakļānu nov.
 Mākoņkalna pag. Rēzeknes nov.
 Mālpils pag. Siguldas nov.
-Mālpils pag. Mālpils nov.
 Mālupes pag. Alūksnes nov.
 Mārcienas pag. Madonas nov.
 Mārkalnes pag. Alūksnes nov.
 Mārsnēnu pag. Cēsu nov.
 Mārupes pag. Mārupes nov.
-Mārupes pag. Mārupes nov.
 Mērdzenes pag. Ludzas nov.
-Mērsraga pag. Rojas nov.
 Mērsraga pag. Talsu nov.
 Mētrienas pag. Madonas nov.
 Nagļu pag. Rēzeknes nov.
@@ -329,9 +319,7 @@ Riebiņu pag. Preiļu nov.
 Rikavas pag. Rēzeknes nov.
 Rites pag. Jēkabpils nov.
 Robežnieku pag. Krāslavas nov.
-Rojas pag. Rojas nov.
 Rojas pag. Talsu nov.
-Ropažu pag. Ropažu nov.
 Ropažu pag. Ropažu nov.
 Rožkalnu pag. Preiļu nov.
 Rožupes pag. Līvānu nov.
@@ -347,7 +335,6 @@ Rundēnu pag. Ludzas nov.
 Rušonas pag. Preiļu nov.
 Sakas pag. Dienvidkurzemes nov.
 Sakstagala pag. Rēzeknes nov.
-Salacas pag. Limbažu raj.
 Salacgrīvas pag. Limbažu nov.
 Salas pag. Jēkabpils nov.
 Salas pag. Mārupes nov.
@@ -362,7 +349,6 @@ Saulkrastu pag. Saulkrastu nov.
 Saunas pag. Preiļu nov.
 Sausnējas pag. Madonas nov.
 Seces pag. Aizkraukles nov.
-Sedas l. t. Strenču nov.
 Sesavas pag. Jelgavas nov.
 Siguldas pag. Siguldas nov.
 Silajāņu pag. Preiļu nov.
@@ -372,7 +358,6 @@ Skaistkalnes pag. Bauskas nov.
 Skaņkalnes pag. Valmieras nov.
 Skrudalienas pag. Augšdaugavas nov.
 Skrundas pag. Kuldīgas nov.
-Skrīveru pag. Skrīveru nov.
 Skrīveru pag. Aizkraukles nov.
 Skujenes pag. Cēsu nov.
 Skultes pag. Limbažu nov.
@@ -386,7 +371,6 @@ Staburaga pag. Aizkraukles nov.
 Staiceles pag. Limbažu nov.
 Stalbes pag. Cēsu nov.
 Stelpes pag. Bauskas nov.
-Stopiņu pag. Stopiņu nov.
 Stopiņu pag. Ropažu nov.
 Stoļerovas pag. Rēzeknes nov.
 Stradu pag. Gulbenes nov.
@@ -402,7 +386,6 @@ Svariņu pag. Krāslavas nov.
 Sventes pag. Augšdaugavas nov.
 Svitenes pag. Bauskas nov.
 Svētes pag. Jelgavas nov.
-Sējas pag. Rīgas raj.
 Sējas pag. Saulkrastu nov.
 Sēlpils pag. Jēkabpils nov.
 Sēmes pag. Tukuma nov.
@@ -502,7 +485,6 @@ Zvārdes pag. Saldus nov.
 Zvārtavas pag. Valkas nov.
 Ābeļu pag. Jēkabpils nov.
 Ādažu pag. Ādažu nov.
-Ādažu pag. Ādažu nov.
 Ārlavas pag. Talsu nov.
 Ēdoles pag. Kuldīgas nov.
 Ērgļu pag. Madonas nov.
@@ -533,7 +515,7 @@ Saulkrastu l. t. Saulkrastu nov.
 Salaspils l. t. Salaspils nov.
 Kalnciema l. t. Jelgavas nov.
 Lielvārdes l. t. Ogres nov.
-Ķeguma l. t. Ķeguma nov.
+Ķeguma l. t. Ogres nov.
 Jaunjelgavas l. t. Aizkraukles nov.
 Mazsalacas l. t. Valmieras nov.
 Piltenes l. t. Ventspils nov.
@@ -542,3 +524,98 @@ Ainažu l. t. Limbažu nov.
 Salacgrīvas l. t. Limbažu nov.
 Staiceles l. t. Limbažu nov.
 Valdemārpils l. t. Talsu nov.
+Sidrabenes pag. Jelgavas nov.
+Ikšķiles l. t. Ogres nov.
+Ainaži, Limbažu nov.
+Aizkraukle, Aizkraukles nov.
+Aizpute, Dienvidkurzemes nov.
+Aknīste, Jēkabpils nov.
+Aloja, Limbažu nov.
+Alūksne, Alūksnes nov.
+Ape, Smiltenes nov.
+Auce, Dobeles nov.
+Baldone, Ķekavas nov.
+Baloži, Ķekavas nov.
+Balvi, Balvu nov.
+Bauska, Bauskas nov.
+Brocēni, Saldus nov.
+Cesvaine, Madonas nov.
+Cēsis, Cēsu nov.
+Dagda, Krāslavas nov.
+Daugavpils, Daugavpils
+Dobele, Dobeles nov.
+Durbe, Dienvidkurzemes nov.
+Grobiņa, Dienvidkurzemes nov.
+Gulbene, Gulbenes nov.
+Iecava, Bauskas nov.
+Ikšķile, Ogres nov.
+Ilūkste, Augšdaugavas nov.
+Jaunjelgava, Aizkraukles nov.
+Jelgava, Jelgava
+Jēkabpils, Jēkabpils nov.
+Jūrmala, Jūrmala
+Kalnciems, Jelgavas nov.
+Kandava, Tukuma nov.
+Koknese, Aizkraukles nov.
+Krāslava, Krāslavas nov.
+Kuldīga, Kuldīgas nov.
+Kārsava, Ludzas nov.
+Lielvārde, Ogres nov.
+Liepāja, Liepāja
+Limbaži, Limbažu nov.
+Lubāna, Madonas nov.
+Ludza, Ludzas nov.
+Līgatne, Cēsu nov.
+Līvāni, Līvānu nov.
+Madona, Madonas nov.
+Mazsalaca, Valmieras nov.
+Mārupe, Mārupes nov.
+Ogre, Ogres nov.
+Olaine, Olaines nov.
+Piltene, Ventspils nov.
+Preiļi, Preiļu nov.
+Priekule, Dienvidkurzemes nov.
+Pāvilosta, Dienvidkurzemes nov.
+Pļaviņas, Aizkraukles nov.
+Rēzekne, Rēzekne
+Rīga, Rīga
+Rūjiena, Valmieras nov.
+Sabile, Talsu nov.
+Salacgrīva, Limbažu nov.
+Salaspils, Salaspils nov.
+Saldus, Saldus nov.
+Saulkrasti, Saulkrastu nov.
+Seda, Valmieras nov.
+Sigulda, Siguldas nov.
+Skrunda, Kuldīgas nov.
+Smiltene, Smiltenes nov.
+Staicele, Limbažu nov.
+Stende, Talsu nov.
+Strenči, Valmieras nov.
+Subate, Augšdaugavas nov.
+Talsi, Talsu nov.
+Tukums, Tukuma nov.
+Valdemārpils, Talsu nov.
+Valka, Valkas nov.
+Valmiera, Valmieras nov.
+Vangaži, Ropažu nov.
+Varakļāni, Varakļānu nov.
+Ventspils, Ventspils
+Viesīte, Jēkabpils nov.
+Viļaka, Balvu nov.
+Viļāni, Rēzeknes nov.
+Zilupe, Ludzas nov.
+Ādaži, Ādažu nov.
+Ķegums, Ogres nov.
+Ķekava, Ķekavas nov.
+Cits, Cits
+Lapmežciema nov., Tukuma nov.
+Carnikavas nov., Ādažu nov.
+Iecavas nov., Bauskas nov.
+Garkalnes nov., Garkalnes nov.
+Inčukalna nov., Siguldas nov.
+Sējas nov., Saulkrastu nov.
+Stopiņu nov., Ropažu nov.
+Ropažu nov., Ropažu nov.
+Ādažu nov., Ādažu nov.
+Valgundes nov., Jelgavas nov.
