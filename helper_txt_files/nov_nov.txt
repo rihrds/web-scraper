@@ -1,5 +1,5 @@
 Saulkrastu nov., Saulkrastu nov.
-Garkalnes nov., Garkalnes nov.
+Garkalnes nov., Ropažu nov.
 Engures nov., Tukuma nov.
 Mārupes nov., Mārupes nov.
 Jūrmala, Jūrmala
@@ -43,7 +43,7 @@ Ciblas nov., Ludzas nov.
 Rojas nov., Talsu nov.
 Ogres nov., Ogres nov.
 Liepāja, Liepāja
-Ķeguma nov., Ķeguma nov.
+Ķeguma nov., Ogres nov.
 Grobiņas nov., Dienvidkurzemes nov.
 Gulbenes nov., Gulbenes nov.
 Madonas nov., Madonas nov.

@@ -1,5 +1,11 @@
 <!DOCTYPE html>
 <html lang="en">
+<script>
+    if (!localStorage.getItem("order")){ 
+        console.log("got here"); 
+        localStorage.setItem("order", "pasc");
+    }
+</script>
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
@@ -50,135 +56,62 @@
                     <label for="$region"></label>
                     <select name="$region" class="form-control bg-dark text-light" placeholder="">
                         <option value="">---</option>
-                        <option value="Rīga,">Rīga</option>
+                        <option value="Rīga">Rīga</option>
                         <option value="Daugavpils">Daugavpils</option>
                         <option value="Jelgava">Jelgava</option>
-                        <option value="Jēkabpils un raj.">Jēkabpils un raj.</option>
-                        <option value="Jūrmala,">Jūrmala</option>
-                        <option value="25115">Liepāja</option>
-                        <option value="25116">Rēzekne</option>
-                        <option value="25117">Valmiera</option>
-                        <option value="25118">Ventspils</option>
-                        <option value="25019">Aglonas nov.</option>
-                        <option value="25002">Aizkraukles nov.</option>
-                        <option value="25020">Aizputes nov.</option>
-                        <option value="25021">Aknīstes nov.</option>
-                        <option value="25022">Alojas nov.</option>
-                        <option value="25023">Alsungas nov.</opstion>
-                        <option value="25024">Alūksnes nov.</option>
-                        <option value="25001">Amatas nov.</option>
-                        <option value="25025">Apes nov.</option>
-                        <option value="25033">Auces nov.</option>
-                        <option value="25027">Ādažu nov.</option>
-                        <option value="25034">Babītes nov.</option>
-                        <option value="25032">Baldones nov.</option>
-                        <option value="25035">Baltinavas nov.</option>
-                        <option value="25036">Balvu nov.</option>
-                        <option value="25037">Bauskas nov.</option>
-                        <option value="25038">Beverīnas nov.</option>
-                        <option value="25004">Brocēnu nov.</option>
-                        <option value="25098">Burtnieku nov.</option>
-                        <option value="25028">Carnikavas nov.</option>
-                        <option value="25040">Cesvaines nov.</option>
-                        <option value="25039">Cēsu nov.</option>
-                        <option value="25000">Ciblas nov.</option>
-                        <option value="25041">Dagdas nov.</option>
-                        <option value="25042">Daugavpils nov.</option>
-                        <option value="25043">Dobeles nov.</option>
-                        <option value="25044">Dundagas nov.</option>
-                        <option value="25006">Durbes nov.</option>
-                        <option value="25045">Engures nov.</option>
-                        <option value="25099">Ērgļu nov.</option>
-                        <option value="25029">Garkalnes nov.</option>
-                        <option value="25046">Grobiņas nov.</option>
-                        <option value="25047">Gulbenes nov.</option>
-                        <option value="25010">Iecavas nov.</option>
-                        <option value="25018">Ikšķiles nov.</option>
-                        <option value="25017">Ilūkstes nov.</option>
-                        <option value="25101">Inčukalna nov.</option>
-                        <option value="25048">Jaunjelgavas nov.</option>
-                        <option value="25102">Jaunpiebalgas nov.</option>
-                        <option value="25049">Jaunpils nov.</option>
-                        <option value="25051">Jelgavas nov.</option>
-                        <option value="25050">Jēkabpils nov.</option>
-                        <option value="25015">Kandavas nov.</option>
-                        <option value="25052">Kārsavas nov.</option>
-                        <option value="25090">Kocēnu nov.</option>
-                        <option value="25053">Kokneses nov.</option>
-                        <option value="25054">Krimuldas nov.</option>
-                        <option value="25055">Krustpils nov.</option>
-                        <option value="25003">Krāslavas nov.</option>
-                        <option value="25056">Kuldīgas nov.</option>
-                        <option value="25009">Ķeguma nov.</option>
-                        <option value="25057">Ķekavas nov.</option>
-                        <option value="25105">Lielvārdes nov.</option>
-                        <option value="25059">Limbažu nov.</option>
-                        <option value="25026">Lubānas nov.</option>
-                        <option value="25060">Ludzas nov.</option>
-                        <option value="25058">Līgatnes nov.</option>
-                        <option value="25008">Līvānu nov.</option>
-                        <option value="25061">Madonas nov.</option>
-                        <option value="25064">Mazsalacas nov.</option>
-                        <option value="25062">Mālpils nov.</option>
-                        <option value="25063">Mārupes nov.</option>
-                        <option value="25031">Mērsraga nov.</option>
-                        <option value="25065">Naukšēnu nov.</option>
-                        <option value="25066">Neretas nov.</option>
-                        <option value="25067">Nīcas nov.</option>
-                        <option value="25011">Ogres nov.</option>
-                        <option value="25068">Olaines nov.</option>
-                        <option value="25014">Ozolnieku nov.</option>
-                        <option value="25005">Preiļu nov.</option>
-                        <option value="25072">Priekules nov.</option>
-                        <option value="25073">Priekuļu nov.</option>
-                        <option value="25069">Pārgaujas nov.</option>
-                        <option value="25070">Pāvilostas nov.</option>
-                        <option value="25071">Pļaviņu nov.</option>
-                        <option value="25104">Raunas nov.</option>
-                        <option value="25107">Riebiņu nov.</option>
-                        <option value="25030">Rojas nov.</option>
-                        <option value="25106">Ropažu nov.</option>
-                        <option value="25075">Rucavas nov.</option>
-                        <option value="25076">Rugāju nov.</option>
-                        <option value="25077">Rundāles nov.</option>
-                        <option value="25074">Rēzeknes nov.</option>
-                        <option value="25078">Rūjienas nov.</option>
-                        <option value="25079">Salacgrīvas nov.</option>
-                        <option value="25080">Salas nov.</option>
-                        <option value="25109">Salaspils nov.</option>
-                        <option value="25081">Saldus nov.</option>
-                        <option value="25103">Saulkrastu nov.</option>
-                        <option value="25016">Siguldas nov.</option>
-                        <option value="25083">Skrundas nov.</option>
-                        <option value="25082">Skrīveru nov.</option>
-                        <option value="25084">Smiltenes nov.</option>
-                        <option value="25108">Stopiņu nov.</option>
-                        <option value="25085">Strenču nov.</option>
-                        <option value="25100">Sējas nov.</option>
-                        <option value="25086">Talsu nov.</option>
-                        <option value="25087">Tukuma nov.</option>
-                        <option value="25012">Tērvetes nov.</option>
-                        <option value="25088">Vaiņodes nov.</option>
-                        <option value="25089">Valkas nov.</option>
-                        <option value="25091">Varakļānu nov.</option>
-                        <option value="25092">Vecpiebalgas nov.</option>
-                        <option value="25093">Vecumnieku nov.</option>
-                        <option value="25094">Ventspils nov.</option>
-                        <option value="25095">Viesītes nov.</option>
-                        <option value="25096">Viļakas nov.</option>
-                        <option value="25097">Viļānu nov.</option>
-                        <option value="25007">Vārkavas nov.</option>
-                        <option value="25013">Zilupes nov.</option>
+                        <option value="Ventspils">Ventspils</option>
+                        <option value="Jūrmala">Jūrmala</option>
+                        <option value="Liepāja">Liepāja</option>
+                        <option value="Rēzekne">Rēzekne</option>
+                        <option value="Aizkraukles nov.">Aizkraukles nov.</option>
+                        <option value="Alūksnes nov.">Alūksnes nov.</option>
+                        <option value="Augšdaugavas nov.">Augšdaugavas nov.</option>
+                        <option value="Balvu nov.">Balvu nov.</option>
+                        <option value="Ādažu nov.">Ādažu nov.</option>
+                        <option value="Bauskas nov.">Bauskas nov.</option>
+                        <option value="Cēsu nov.">Cēsu nov.</option>
+                        <option value="Dienvidkurzemes nov.">Dienvidkurzemes nov.</option>
+                        <option value="Dobeles nov.">Dobeles nov.</option>
+                        <option value="Gulbenes nov.">Gulbenes nov.</option>
+                        <option value="Jelgavas nov.">Jelgavas nov.</option>
+                        <option value="Jēkabpils nov.">Jēkabpils nov.</option>
+                        <option value="Krāslavas nov.">Krāslavas nov.</option>
+                        <option value="Kuldīgas nov.">Kuldīgas nov.</option>
+                        <option value="Ķekavas nov.">Ķekavas nov.</option>
+                        <option value="Limbažu nov.">Limbažu nov.</option>
+                        <option value="Ludzas nov.">Ludzas nov.</option>
+                        <option value="Līvānu nov.">Līvānu nov.</option>
+                        <option value="Madonas nov.">Madonas nov.</option>
+                        <option value="Mārupes nov.">Mārupes nov.</option>
+                        <option value="Ogres nov.">Ogres nov.</option>
+                        <option value="Olaines nov.">Olaines nov.</option>
+                        <option value="Preiļu nov.">Preiļu nov.</option>
+                        <option value="Ropažu nov.">Ropažu nov.</option>
+                        <option value="Rēzeknes nov.">Rēzeknes nov.</option>
+                        <option value="Salaspils nov.">Salaspils nov.</option>
+                        <option value="Saldus nov.">Saldus nov.</option>
+                        <option value="Saulkrastu nov.">Saulkrastu nov.</option>
+                        <option value="Siguldas nov.">Siguldas nov.</option>
+                        <option value="Smiltenes nov.">Smiltenes nov.</option>
+                        <option value="Talsu nov.">Talsu nov.</option>
+                        <option value="Tukuma nov.">Tukuma nov.</option>
+                        <option value="Valkas nov.">Valkas nov.</option>
+                        <option value="Valmieras nov.">Valmieras nov.</option>
+                        <option value="Varakļānu nov.">Varakļānu nov.</option>
+                        <option value="Ventspils nov.">Ventspils nov.</option>
+                        <option value="Cits">Cits</option>
                     </select>
                 </div>
             </div>
             <div class="d-flex justify-content-center">
+                <input type="hidden" id="order" name="order" value="">
                 <input type="hidden" name="page" value="1">
                 <button type="submit" class="btn btn-outline-light bg-light text-dark col-3 my-4">Meklēt</button>
             </div>
         </form>
     </div>
     <script>
+        document.getElementById("order").value = localStorage.getItem("order");
         const form = document.forms[0];
         var controls=form.elements;
 

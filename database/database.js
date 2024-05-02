@@ -59,7 +59,7 @@ function create_db() {
 var export_funcs = {
     retrieve_data:function retrieve_data(conds) {
 
-        var query = "SELECT region FROM sludinajumi "
+        var query = "SELECT * FROM sludinajumi "
         if (conds){
             query += "WHERE "
         }
@@ -68,11 +68,15 @@ var export_funcs = {
         var conversion = {"$min_price":"price >= $min_price", "$max_price":"price <= $max_price", "$min_prop_size":"prop_size >= $min_prop_size", "$max_prop_size":"prop_size <= $max_prop_size", "$min_lot_size":"lot_size >= $min_lot_size", "$max_lot_size":"lot_size <= $max_lot_size", "$region":"region LIKE '%' || $region || '%'"}
         var query_add_parts = [];
         var curr_page = 0;
+        var order = ""
         for (var key of Object.keys(conds)){
             if (poss_conds.includes(key) && key != "$page"){
                 query_add_parts.push(conversion[key]);
             } else if (key == "$page"){
                 curr_page = conds[key];
+                delete conds[key]
+            } else if (key == "$order") {
+                order = conds[key]
                 delete conds[key]
             }
         }
@@ -84,7 +88,7 @@ var export_funcs = {
         if (Object.keys(conds).includes("lot_size")){
             query += " OR ( lot_size = '???' AND " + query_add_parts.filter(n => !n.includes("lot_size")).join(" AND ") + ")"
         }
-        //query += ` ORDER BY price ASC LIMIT ${results_per_page} OFFSET ${((curr_page*results_per_page)-results_per_page)};`;
+        query += ` ORDER BY ${order} LIMIT ${results_per_page} OFFSET ${((curr_page*results_per_page)-results_per_page)};`;
 
         //add order by based on user input
         console.log(query);

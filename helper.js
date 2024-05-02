@@ -76,7 +76,7 @@ var export_funcs = {
         return data[1].count
     },
     search_sslv:async function search_sslv(){
-        const browser = await puppeteer.launch({headless:"new"});
+        const browser = await puppeteer.launch({headless:false});
         const page = await browser.newPage();
     
         // Navigate the page to a URL

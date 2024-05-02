@@ -12,6 +12,9 @@ var database = await import("file://"+database_location);
 database = database["default"];
 helper = helper["default"];
 
+var order_conversion = [{"pasc":"price ASC"}, {"pdesc":"price DESC"}, {"lsasc":"lot_size ASC"}, {"lsdesc":"lot_size DESC"}, {"psasc":"prop_size ASC"}, {"pdesc":"prop_size DESC"}]
+var order_conversion_keys = ["pasc", "pdesc", "lsasc", "lsdesc", "psasc", "psdesc"]
+
 import fs from 'node:fs';
 
 const app = express();
@@ -28,7 +31,7 @@ function create_html_resp(resp){
     for (var i=0; i<resp.length;i++){
 
         var to_add = ""
-        var main_image = `<a href=${resp[i].url} target="_blank"><img class="border border-3 mx-auto d-block" src=${resp[i].image}></a>`;
+        var main_image = `<a href=${resp[i].url} target="_blank"><img class="border border-3 mx-auto d-block" max-width="500px" height="350px" src=${resp[i].image}></a>`;
         var price = `<p class="h5 fw-bold">Cena: ${resp[i].price}€</p>`;
         var address = `<p class="h6 text-secondary">${[resp[i].region, resp[i].address].join(", ")}</p>`;
         var size = `<p>Zemes platība: ${resp[i].lot_size}${resp[i].lot_size_unit} ${"&nbsp;".repeat(5)} Mājas platība: ${resp[i].prop_size}m²</p>`;
@@ -54,9 +57,13 @@ app.get('/', (req, res) => {
 
 app.get('/search', async (req, res) => {
     var req_data = req.query;
+    console.log(req_data)
     var page = req_data["page"];
     delete req_data["page"]
     req_data["$page"] = page;
+    var order = req_data["order"];
+    delete req_data["order"];
+    req_data["$order"] = Object.values(order_conversion[order_conversion_keys.indexOf(order)]);
     console.log(req_data);
 
     /*for (var [key, value] of Object.entries(req.query)){
@@ -70,7 +77,7 @@ app.get('/search', async (req, res) => {
     }*/
 
     var resp = await database.retrieve_data(req_data);
-    //console.log(resp)
+    console.log(resp)
 
     if (typeof resp === "string") {
         res.send(fs.readFileSync(__dirname+'/static/header.html', 'utf-8')+"<div class='text-center'><h1>Neko neatradām ar šiem kritērijiem :(</h1></div></body></html>");

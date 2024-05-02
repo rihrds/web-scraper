@@ -12,9 +12,22 @@
             <li class="nav-item active">
                 <a class="nav-link text-light" href="javascript:window.history.go(-parseInt(localStorage.getItem('steps')));"><h3>Atpakaļ</h3></a>
             </li>
+            <li class="nav-item active">
+                <select name="order" id="order" class="form-control bg-dark text-light">
+                    <option value="pasc">cena augošā secībā</option>
+                    <option value="pdesc">cena dilstošā secībā</option>
+                    <option value="lsasc">zemes platība augošā secībā</option>
+                    <option value="lsdesc">zemes platība dilstošā secībā</option>
+                    <option value="psasc">mājas platība augošā secībā</option>
+                    <option value="psdesc">mājas platība dilstošā secībā</option>
+                </select>
+            </li>
         </ul>
     </nav>
     <script>
+        document.getElementById("order").value=localStorage.getItem("order");
+
+        let parsedURL = new URLSearchParams(document.location.href);
         index_of_page = window.location.search.substr(1).indexOf("page=")+5;
         curr_page = parseInt(window.location.search.substr(1).substring(index_of_page));
 
@@ -22,4 +35,10 @@
             localStorage.setItem("page", curr_page);
             localStorage.setItem("steps", parseInt(localStorage.getItem("steps"))+1)
         }
+
+        document.getElementById('order').onchange = function() {
+        localStorage.setItem("order", this.value);
+        parsedURL.set("order", localStorage.getItem("order"))
+        window.location.href = decodeURIComponent(parsedURL.toString())
+};
     </script>

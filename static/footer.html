@@ -20,17 +20,18 @@
             document.getElementById("prev").remove();
         }
 
-        //how to fix?
         if (document.getElementById("rezultati").childElementCount < 12 || document.getElementById("rezultati").children[10].childElementCount < 2){
             document.getElementById("next").remove();
         }
 
-        base_url = window.location.href.split("?")[0]+"?"+window.location.search.substr(1).substring(0,index_of_page)
+        base_url = window.location.href.split("?")[0]+"?"+window.location.search.substr(1).substring(0,index_of_page)//+"&$order="+localStorage.getItem("$order")
         function prev(){
-            window.location.href = base_url+(curr_page-1).toString();
+            parsedURL.set("page", curr_page-1)
+            window.location.href = decodeURIComponent(parsedURL.toString())
         }
         function next(){
-            window.location.href = base_url+(curr_page+1).toString();
+            parsedURL.set("page", curr_page+1)
+            window.location.href = decodeURIComponent(parsedURL.toString())
         }
     </script>
 </body>
