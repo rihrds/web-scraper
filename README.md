@@ -1,8 +1,17 @@
 ## How to run:
 * In the folder with the file "package.json" run `npm install`
 * Then `node app.js`
+## Atjaunot datubāzi:
+* izdzēš database.db failu
+* izdzēš komentēto līniju pēdējo līniju no database.js faila
+* konsole ieraksta `node database.js` database mapē
+* pagaida kamēr ir pabeidzies
+* atkal komentē iepriekš "atkomentēto"līniju
 
 # Projekts ir pabeigts
+Projekts ir par sludinājumu ievākšanu no ss.lv un city24.lv un to apvienošanu vienā mājaslapā, lai lietotājs varētu meklēt sludinājumus abās sludinājumu lapās vienotā veidā.
+Projektā tiek izmantotas šādas "bibliotēkas": puppeteer, sqlite3, 
+
 
 ## Funkcijas analīze:
 ```js
